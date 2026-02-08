@@ -7,7 +7,7 @@ from crawl4ai.async_configs import (
 )
 
 
-async def crawl_website_bm25(crawler, url):
+async def crawl_website(crawler, url):
     run_config = CrawlerRunConfig(
         excluded_tags=["nav", "footer", "header"],
         exclude_external_links=True,
@@ -19,6 +19,6 @@ async def crawl_website_bm25(crawler, url):
 
 async def crawl_websites(urls):
     async with AsyncWebCrawler() as crawler:
-        tasks = [crawl_website_bm25(crawler, url) for url in urls]
+        tasks = [crawl_website(crawler, url) for url in urls]
         contents = await asyncio.gather(*tasks)
     return contents

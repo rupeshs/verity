@@ -1,7 +1,11 @@
 # Verity
 
-**Verity** is a Perplexity-style AI search and answer engine that runs **fully locally on AI PCs**.  
-It combines **SearXNG-powered search**, retrieval, and **local LLM reasoning** to generate **grounded, verifiable answers** — without relying on cloud-based LLM providers.
+**Verity** is a Perplexity-style AI search and answer engine that runs fully locally on AI PCs.  
+It combines SearXNG-powered search, retrieval, and local LLM reasoning to generate grounded, verifiable answers — without relying on cloud-based LLM providers.
+
+![Verity screenshot](https://raw.githubusercontent.com/rupeshs/verity/refs/heads/main/docs/images/verity-screenshot.png)
+
+
 
 ## ✨ Key Features
 - Fully Local, AI-PC Ready -  Optimized for Intel AI PCs using OpenVINO (CPU / iGPU / NPU), Ollama (CPU / CUDA / Metal)
@@ -13,7 +17,6 @@ It combines **SearXNG-powered search**, retrieval, and **local LLM reasoning** t
 - CLI and WebUI support
 - API server support
 - Powered by Jan-nano 4B model,or configure any model
-
 
 Supported LLM runtimes:
 - **OpenVINO** - CPU / iGPU / NPU
@@ -73,3 +76,12 @@ We have tested the following models.
 | OpenVINO              | rupeshs/jan-nano-int4-npu-ov      |  NPU (Intel)|
 | Ollama                | mannix/jan-nano:latest            |  CPU/CUDA   |
 
+Tested using Intel AI PC with Intel Core Ultra Series 1 processor with CPU/GPU/NPU.
+
+### How to use Ollama models with Verity
+
+Use the below config in `.env` file. update LLM provider(LLM_PROVIDER) as ollama and use model(LLM_MODEL_PATH) as  `mannix/jan-nano:latest`.
+
+Run the below command to pull the model.
+
+`ollama pull mannix/jan-nano:latest`
