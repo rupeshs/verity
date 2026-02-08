@@ -42,7 +42,7 @@ function App() {
               Trusted answers. Local compute.
             </h2>
             <p className="text-neutral-500 dark:text-neutral-400 text-lg">
-              Ask anything and get a summarized response.
+              Ask anything, get concise answers!
             </p>
           </div>
         )}

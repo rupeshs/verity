@@ -24,10 +24,19 @@ def search_query(
         "safesearch": 0,
         "engines": ["google"],
     }
-    searxng_url = f"{searxng_base_url}/search"
-    response = requests.post(searxng_url, headers=headers, params=params, timeout=10)
-    response.raise_for_status()
-    results = response.json()["results"]
+    try:
+        searxng_url = f"{searxng_base_url}/search"
+        response = requests.post(
+            searxng_url, headers=headers, params=params, timeout=10
+        )
+        response.raise_for_status()
+        results = response.json()["results"]
+    except requests.exceptions.Timeout:
+        raise Exception("SearXNG request timed out,please ensure it is running")
+    except requests.exceptions.ConnectionError:
+        raise Exception("Could not connect to SearXNG,please ensure it is running")
+    except Exception as e:
+        raise Exception(f"Unexpected error in search: {e}")
 
     return results[:num_results]
 
