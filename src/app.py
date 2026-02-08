@@ -1,6 +1,5 @@
 import asyncio
 import sys
-from argparse import ArgumentParser
 
 from dotenv import load_dotenv
 from loguru import logger
@@ -26,15 +25,6 @@ logger.remove()
 logger.add(
     sys.stderr,
     format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
-)
-
-parser = ArgumentParser(description=f"Verity")
-parser.add_argument(
-    "-o",
-    "--ollama",
-    action="store_true",
-    help="Use Ollama models",
-    required=False,
 )
 
 

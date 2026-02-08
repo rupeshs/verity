@@ -23,3 +23,4 @@ echo Python version: %python_version%
 
 set PATH=%PATH%;%~dp0env\Lib\site-packages\openvino\libs
 call "%~dp0env\Scripts\activate.bat"  && %PYTHON_COMMAND% "%~dp0\src\api_server.py" 
+pause
