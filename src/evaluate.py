@@ -9,7 +9,7 @@ from openai import AsyncOpenAI
 
 from backend.documents.web_documents import WebDocuments
 from backend.llm.llm_factory import LLMFactory
-
+from backend.llm.llm_service import LLMService
 from backend.rag.rag_engine import RagEngine
 
 SAMPLES_COUNT = 10
@@ -64,7 +64,8 @@ async def evaluate_rag():
     llm = LLMFactory.create_llm("openvino", "rupeshs/jan-nano-int4-ov", "CPU")
     results = []
     contexts = []
-    rag_engine = RagEngine(embeddings_model=embeddings, llm=llm)
+    llm_service = LLMService(llm)
+    rag_engine = RagEngine(embeddings_model=embeddings, llm_service=llm_service)
     rag_engine.load_documents(docs)
     for query in queries[:SAMPLES_COUNT]:
         rag_stream = rag_engine.get_answer_stream(query, False, False)
