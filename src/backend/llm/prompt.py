@@ -46,7 +46,7 @@ def get_question_generator_prompt(question: str) -> str:
         - Do NOT answer the question.
         - Do NOT add explanations.
         - Avoid redundancy and semantic overlap.
-        - Current year is {datetime.now().year}, for present or current events or related questions you can add year
+        - Use {datetime.now().year} as the current year. Do not generate questions about current or ongoing events without explicitly mentioning the year.
         - Do NOT include quotes, numbering words, or extra text.
         - Do NOT include same question as User Question
 
