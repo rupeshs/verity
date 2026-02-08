@@ -12,6 +12,7 @@ from loguru import logger
 from backend.documents.web_documents import WebDocuments
 from backend.llm.embeddings import load_embedding
 from backend.llm.llm_factory import LLMFactory
+from backend.llm.llm_service import LLMService
 from backend.rag.rag_engine import RagEngine
 from backend.search.search_engine import SearchEngine
 from config import (
@@ -38,7 +39,11 @@ async def lifespan(app: FastAPI):
     logger.info("Loading models...")
     embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
     llm = LLMFactory.create_llm(LLM_PROVIDER, LLM_MODEL_PATH, DEVICE)
-    app.state.rag_engine = RagEngine(embeddings_model=embeddings, llm=llm)
+    llm_service = LLMService(llm)
+    app.state.rag_engine = RagEngine(
+        embeddings_model=embeddings,
+        llm_service=llm_service,
+    )
     yield
     del app.state.rag_engine
 
@@ -61,7 +66,7 @@ app.add_middleware(
 
 def answer_streamer(query: str, rag_engine: RagEngine):
     yield "event: search\ndata: Searching...\n\n"
-    search_engine = SearchEngine(rag_engine.get_llm(), SEARXNG_BASE_URL)
+    search_engine = SearchEngine(rag_engine.get_llm_service(), SEARXNG_BASE_URL)
     logger.info("Searching...")
     results = search_engine.search(
         query,

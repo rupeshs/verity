@@ -1,21 +1,22 @@
 import re
-from backend.llm.ollama_llm import AbstractLLM
-from backend.search.searxng import search_query
-from backend.search.searxng import get_search_results
+
 from loguru import logger
+
+from backend.llm.llm_service import LLMService
+from backend.search.searxng import get_search_results, search_query
 
 
 class SearchEngine:
     def __init__(
         self,
-        llm: AbstractLLM,
+        llm_service: LLMService,
         searxng_base_url: str,
     ):
-        self.llm = llm
+        self.llm_service = llm_service
         self.searxng_base_url = searxng_base_url
 
     def _generate_questions(self, question: str) -> list[str]:
-        response = self.llm.generate_questions(question)
+        response = self.llm_service.generate_questions(question)
         questions = self._parse_questions(response)
         return questions
 

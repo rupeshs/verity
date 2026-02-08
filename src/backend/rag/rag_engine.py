@@ -3,7 +3,7 @@ from pprint import pprint
 from langchain_core.documents import Document
 from loguru import logger
 
-from backend.llm.abstract_llm import AbstractLLM
+from backend.llm.llm_service import LLMService
 from backend.rag.chunk_processor import (
     add_chunk_ids,
     create_chunk_map,
@@ -16,9 +16,13 @@ from backend.rag.splitter import get_splits
 
 
 class RagEngine:
-    def __init__(self, embeddings_model, llm: AbstractLLM):
+    def __init__(
+        self,
+        embeddings_model,
+        llm_service: LLMService,
+    ):
         self.embeddings = embeddings_model
-        self.llm = llm
+        self.llm_service = llm_service
         self._context = ""
         self.citation_map = {}
 
@@ -82,7 +86,7 @@ class RagEngine:
 
         self._dump_context()
         logger.info("🧠 Preparing answer...")
-        stream = self.llm.get_answer_stream(self._context, question)
+        stream = self.llm_service.get_answer_stream(self._context, question)
 
         for chunk in stream:
             yield chunk["message"]["content"]
@@ -106,5 +110,5 @@ class RagEngine:
         with open("context.md", "w", encoding="utf-8") as f:
             f.write(self._context)
 
-    def get_llm(self):
-        return self.llm
+    def get_llm_service(self):
+        return self.llm_service

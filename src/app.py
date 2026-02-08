@@ -8,6 +8,7 @@ from backend.documents.web_documents import WebDocuments
 from backend.llm.llm_factory import LLMFactory
 from backend.rag.rag_engine import RagEngine
 from backend.search.search_engine import SearchEngine
+from backend.llm.llm_service import LLMService
 from utils import show_system_info
 
 
@@ -21,20 +22,27 @@ from config import (
 )
 
 load_dotenv()
-logger.remove()
-logger.add(
-    sys.stderr,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
-)
+# logger.remove()
+# logger.add(
+#     sys.stderr,
+#     format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
+# )
 
 
 async def async_main():
     try:
         show_system_info(DEVICE, LLM_PROVIDER)
         llm = LLMFactory.create_llm(LLM_PROVIDER, LLM_MODEL_PATH, DEVICE)
-        search_engine = SearchEngine(llm, SEARXNG_BASE_URL)
         embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
-        rag_engine = RagEngine(embeddings_model=embeddings, llm=llm)
+        llm_service = LLMService(llm)
+        search_engine = SearchEngine(
+            llm_service,
+            SEARXNG_BASE_URL,
+        )
+        rag_engine = RagEngine(
+            embeddings_model=embeddings,
+            llm_service=llm_service,
+        )
 
         while True:
             query = input("Enter your question (or 'exit' to quit): ")

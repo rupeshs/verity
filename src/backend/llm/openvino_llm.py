@@ -5,14 +5,14 @@ import openvino_genai as ov_genai
 from loguru import logger
 
 from backend.llm.abstract_llm import AbstractLLM
-from backend.llm.prompt import get_prompt
-from backend.llm.question_generator import QuestionGeneratorMixin
+
 
 MAX_PROMPT_LEN = 4096
 MIN_RESPONSE_LEN = 128
+MAX_NEW_TOKENS = 1024
 
 
-class OpenvinoLLM(AbstractLLM, QuestionGeneratorMixin):
+class OpenvinoLLM(AbstractLLM):
     def __init__(self, model: str, device="CPU"):
         self.model = model
         logger.info(f"⌛ Loading {model}...")
@@ -51,16 +51,8 @@ class OpenvinoLLM(AbstractLLM, QuestionGeneratorMixin):
                 break
             yield {"message": {"content": token}}
 
-    def get_answer_stream(self, context: str, question: str) -> any:
-        prompt = get_prompt(context, question)
-        stream = self.generate_stream(prompt)
-        return stream
-
-    def get_model(self) -> str:
-        return self.model
-
     def generate_stream(self, prompt: str):
         config = ov_genai.GenerationConfig()
-        config.max_new_tokens = 1024
+        config.max_new_tokens = MAX_NEW_TOKENS
         stream = self._generate_ovstream(self.pipe, prompt, config)
         return stream
