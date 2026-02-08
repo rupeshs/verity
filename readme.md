@@ -13,7 +13,7 @@ It combines SearXNG-powered search, retrieval, and local LLM reasoning to genera
 - SearXNG-Powered Search - Self-hosted, privacy-friendly meta search engine
 - Designed for fact-grounded, concise answers
 - OpenVINO and Ollama models supported
-- RAG-First Architecture
+- Modular architecture
 - CLI and WebUI support
 - API server support
 - Powered by Jan-nano 4B model,or configure any model
