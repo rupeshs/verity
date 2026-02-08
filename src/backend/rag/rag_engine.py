@@ -70,6 +70,11 @@ class RagEngine:
         )
         return context
 
+    def _trim_title(self, title, max_len=60):
+        if len(title) <= max_len:
+            return title
+        return title[:max_len].rsplit(" ", 1)[0] + "..."
+
     def get_answer_stream(
         self,
         question: str,
@@ -84,7 +89,7 @@ class RagEngine:
         self._context = self._get_context(expanded_chunks)
         logger.info(f"Chunk expansion completed | count: {len(expanded_chunks)}")
 
-        self._dump_context()
+        # self._dump_context()
         logger.info("🧠 Preparing answer...")
         stream = self.llm_service.get_answer_stream(self._context, question)
 
@@ -96,7 +101,7 @@ class RagEngine:
                 line = "\n\n#### Sources \n"
                 yield line
                 for _, data in self.citation_map.items():
-                    line = f"- [{data['citation_id']}]: [{data['title']}]({data['url']}) \n"
+                    line = f"- [{data['citation_id']}] - [{self._trim_title(data['title'])}]({data['url']}) \n"
                     yield line
             else:
                 yield "\n\nSources : \n"
