@@ -1,0 +1,73 @@
+import asyncio
+import sys
+from argparse import ArgumentParser
+
+from dotenv import load_dotenv
+from loguru import logger
+
+from backend.documents.web_documents import WebDocuments
+from backend.llm.llm_factory import LLMFactory
+from backend.rag.rag_engine import RagEngine
+from backend.search.search_engine import SearchEngine
+from utils import show_system_info
+
+
+from backend.llm.embeddings import load_embedding
+from config import (
+    DEVICE,
+    LLM_MODEL_PATH,
+    LLM_PROVIDER,
+    NUM_SEARCH_RESULTS,
+    SEARXNG_BASE_URL,
+)
+
+load_dotenv()
+logger.remove()
+logger.add(
+    sys.stderr,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
+)
+
+parser = ArgumentParser(description=f"Verity")
+parser.add_argument(
+    "-o",
+    "--ollama",
+    action="store_true",
+    help="Use Ollama models",
+    required=False,
+)
+
+
+async def async_main():
+    try:
+        show_system_info(DEVICE, LLM_PROVIDER)
+        llm = LLMFactory.create_llm(LLM_PROVIDER, LLM_MODEL_PATH, DEVICE)
+        search_engine = SearchEngine(llm, SEARXNG_BASE_URL)
+        embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
+        rag_engine = RagEngine(embeddings_model=embeddings, llm=llm)
+
+        while True:
+            query = input("Enter your question (or 'exit' to quit): ")
+            if query.lower() == "exit":
+                break
+            logger.info("Searching...")
+            results = search_engine.search(
+                query,
+                NUM_SEARCH_RESULTS,
+                extend_questions=True,
+            )
+            webdoc = WebDocuments(results)
+            logger.info("Reading...")
+            await webdoc.generate_documents()
+            docs = webdoc.get_documents()
+            rag_engine.load_documents(docs)
+            rag_stream = rag_engine.get_answer_stream(query)
+            for chunk in rag_stream:
+                print(chunk, end="", flush=True)
+
+            print("\n")
+    except Exception as ex:
+        logger.error(ex)
+
+
+asyncio.run(async_main())

@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "../node_modules/streamdown/dist/*.js";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  --color-dark-bg: #171717;
+  --color-dark-surface: #262626;
+  --color-dark-border: #333333;
+}
+
+@layer base {
+  .prose pre {
+    border-radius: 0.75rem !important;
+    padding: 1.25rem !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+  }
+
+  .prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.875em !important;
+  }
+
+  .prose p {
+    line-height: 1.75 !important;
+  }
+}
+
+:root {
+  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", system-ui, sans-serif;
+  background-color: white;
+  transition: background-color 0.3s ease;
+}
+
+.dark body {
+  background-color: var(--color-dark-bg);
+  color: #e5e5e5;
+}

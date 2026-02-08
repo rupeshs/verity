@@ -1,0 +1,14 @@
+
+langchain==1.2.7
+langchain-huggingface==1.2.0
+sentence-transformers==5.2.2
+langchain-core
+Crawl4AI==0.8.0
+ragas==0.4.3
+ollama==0.6.1
+playwright==1.58.0
+openvino-genai==2025.4.1.0
+loguru==0.7.3
+fastapi==0.128.0
+uvicorn==0.40.0
+ruff
