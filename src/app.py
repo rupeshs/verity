@@ -22,11 +22,11 @@ from config import (
 )
 
 load_dotenv()
-# logger.remove()
-# logger.add(
-#     sys.stderr,
-#     format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
-# )
+logger.remove()
+logger.add(
+    sys.stderr,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
+)
 
 
 async def async_main():

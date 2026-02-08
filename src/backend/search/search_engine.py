@@ -15,18 +15,6 @@ class SearchEngine:
         self.llm_service = llm_service
         self.searxng_base_url = searxng_base_url
 
-    def _generate_questions(self, question: str) -> list[str]:
-        response = self.llm_service.generate_questions(question)
-        questions = self._parse_questions(response)
-        return questions
-
-    def _parse_questions(self, question: str) -> list[str]:
-        return [
-            q.strip()
-            for q in re.findall(r"^\s*\d+\.\s*(.+)$", question, re.MULTILINE)
-            if q.strip()
-        ]
-
     def search(
         self,
         question: str,
@@ -34,7 +22,7 @@ class SearchEngine:
         extend_questions: bool = True,
     ):
         if extend_questions:
-            questions = self._generate_questions(question)
+            questions = self.llm_service.generate_questions(question)
             questions.extend([question])
             logger.info(f"Questions: {questions}")
 

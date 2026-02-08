@@ -1,3 +1,5 @@
+import re
+
 from backend.llm.abstract_llm import AbstractLLM
 from backend.llm.prompt import get_prompt, get_question_generator_prompt
 
@@ -14,7 +16,7 @@ class LLMService:
     def generate_questions(
         self,
         question: str,
-    ) -> str:
+    ) -> list[str]:
         prompt = get_question_generator_prompt(question)
         stream = self.llm.generate_stream(prompt)
 
@@ -22,4 +24,11 @@ class LLMService:
         for chunk in stream:
             parts.append(chunk["message"]["content"])
 
-        return "".join(parts)
+        return self._parse_questions("".join(parts))
+
+    def _parse_questions(self, question: str) -> list[str]:
+        return [
+            q.strip()
+            for q in re.findall(r"^\s*\d+\.\s*(.+)$", question, re.MULTILINE)
+            if q.strip()
+        ]
