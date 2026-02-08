@@ -72,8 +72,8 @@ We have tested the following models.
 
 | LLM Provider          | Recommended Model                 | Processor   |
 | --------------------- | ----------------------------------|------------
-| OpenVINO              | rupeshs/jan-nano-int4-ov          |  CPU/GPU    |
-| OpenVINO              | rupeshs/jan-nano-int4-npu-ov      |  NPU (Intel)|
+| OpenVINO              | [rupeshs/jan-nano-int4-ov](https://huggingface.co/rupeshs/jan-nano-int4-ov)         |  CPU/GPU    |
+| OpenVINO              | [rupeshs/jan-nano-int4-npu-ov](https://huggingface.co/rupeshs/jan-nano-int4-npu-ov)    |  NPU (Intel)|
 | Ollama                | mannix/jan-nano:latest            |  CPU/CUDA   |
 
 Tested using Intel AI PC with Intel Core Ultra Series 1 processor with CPU/GPU/NPU.
