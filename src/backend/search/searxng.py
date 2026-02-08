@@ -59,10 +59,3 @@ def get_search_results(
             dedup_results[url] = result
     results = list(dedup_results.values())
     return results
-
-
-# res = search_query("can i take xyzal and vitamin d3 tablet in same day", num_results=3)
-
-# for result in res:
-#     print(f"Title: {result['title']}")
-#     print(f"URL: {result['url']}")
