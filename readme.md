@@ -1,4 +1,4 @@
-# Verity
+# 🔍Verity
 
 **Verity** is a Perplexity-style AI search and answer engine that runs fully locally on AI PCs.  
 It combines SearXNG-powered search, retrieval, and local LLM reasoning to generate grounded, verifiable answers — without relying on cloud-based LLM providers.
@@ -8,11 +8,11 @@ It combines SearXNG-powered search, retrieval, and local LLM reasoning to genera
 
 
 ## ✨ Key Features
-- Fully Local, AI-PC Ready -  Optimized for Intel AI PCs using OpenVINO (CPU / iGPU / NPU), Ollama (CPU / CUDA / Metal)
-- Fast inference on  CPU,GPU,NPU using OpenVINO
-- Designed for fact-grounded, explorable answers
+- Fully Local, AI PC Ready -  Optimized for Intel AI PCs using OpenVINO (CPU / iGPU / NPU), Ollama (CPU / CUDA / Metal)
 - Privacy by Design - Search and inference can be fully self-hosted
 - SearXNG-Powered Search - Self-hosted, privacy-friendly meta search engine
+- Designed for fact-grounded, concise answers
+- OpenVINO and Ollama models supported
 - RAG-First Architecture
 - CLI and WebUI support
 - API server support
@@ -22,19 +22,19 @@ Supported LLM runtimes:
 - **OpenVINO** - CPU / iGPU / NPU
 - **Ollama** - CPU / CUDA / Apple Metal
 
-## 📦Dependencies 
+## Dependencies 
 - Python 3.10 or higher
 - uv - fast Python package and project manager
 - Node.js
 
 ## How to Install and Run 
-Follow the steps to install and run on Windows.
+Follow the steps to install and run on Windows(Automated).
 - Step 1: Install SearXNG by following [this guide](https://nolowiz.com/how-to-use-searxng-as-a-private-search-api-step-by-step-guide/)
 - Step 2: Clone/Download verity repo
 - Step 3: Double click `install.bat` to install
 
 To run CLI interactive app double click `start.bat`.
-To run WebUI start the webserver by double clicking `webserver.bat`.
+To run WebUI start the webserver by double clicking `start-webserver.bat` and start frontend by double clicking `start-webui.bat`.
 OpenVINO models will be downloaded in the first run.
 
 ### Manual installation
