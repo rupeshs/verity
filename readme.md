@@ -90,6 +90,9 @@ If you are changing port configure in the .env file
 
 `OPENAI_LLM_BASE_URL=http://localhost:8000`
 
+:exclamation: You can use any OpenAI compatible LLM servers with Verity.
+
+
 
 ### How to use Ollama models with Verity
 
