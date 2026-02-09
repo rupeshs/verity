@@ -19,6 +19,8 @@ from config import (
     LLM_PROVIDER,
     NUM_SEARCH_RESULTS,
     SEARXNG_BASE_URL,
+    OPENAI_LLM_API_KEY,
+    OPENAI_LLM_BASE_URL,
 )
 
 load_dotenv()
@@ -32,7 +34,13 @@ logger.add(
 async def async_main():
     try:
         show_system_info(DEVICE, LLM_PROVIDER)
-        llm = LLMFactory.create_llm(LLM_PROVIDER, LLM_MODEL_PATH, DEVICE)
+        llm = LLMFactory.create_llm(
+            LLM_PROVIDER,
+            LLM_MODEL_PATH,
+            DEVICE,
+            OPENAI_LLM_BASE_URL,
+            OPENAI_LLM_API_KEY,
+        )
         embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
         llm_service = LLMService(llm)
         search_engine = SearchEngine(

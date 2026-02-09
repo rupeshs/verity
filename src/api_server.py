@@ -22,6 +22,8 @@ from config import (
     LLM_MODEL_PATH,
     LLM_PROVIDER,
     NUM_SEARCH_RESULTS,
+    OPENAI_LLM_API_KEY,
+    OPENAI_LLM_BASE_URL,
     SEARXNG_BASE_URL,
 )
 from utils import show_system_info
@@ -38,7 +40,13 @@ logger.add(
 async def lifespan(app: FastAPI):
     logger.info("Loading models...")
     embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
-    llm = LLMFactory.create_llm(LLM_PROVIDER, LLM_MODEL_PATH, DEVICE)
+    llm = LLMFactory.create_llm(
+        LLM_PROVIDER,
+        LLM_MODEL_PATH,
+        DEVICE,
+        OPENAI_LLM_BASE_URL,
+        OPENAI_LLM_API_KEY,
+    )
     llm_service = LLMService(llm)
     app.state.rag_engine = RagEngine(
         embeddings_model=embeddings,

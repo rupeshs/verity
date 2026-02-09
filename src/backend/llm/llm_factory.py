@@ -1,5 +1,6 @@
 from huggingface_hub import snapshot_download
 from backend.llm.util import is_local_path
+from loguru import logger
 
 
 class LLMFactory:
@@ -8,7 +9,10 @@ class LLMFactory:
         llm_provider: str,
         model_path_or_name: str,
         device: str = "CPU",
+        api_base_url: str = None,
+        api_key: str = None,
     ):
+        logger.info(f"LLM Provider: {llm_provider}")
         if llm_provider.lower() == "ollama":
             from backend.llm.ollama_llm import OllamaLLM
 
@@ -23,6 +27,14 @@ class LLMFactory:
                     repo_id=model_path_or_name, repo_type="model"
                 )
             return OpenvinoLLM(model=model_path, device=device)
+        elif llm_provider.lower() == "openai":
+            from backend.llm.openai_compatible_llm import OpenAICompatibleLLM
+
+            return OpenAICompatibleLLM(
+                model=model_path_or_name,
+                base_url=api_base_url,
+                api_key=api_key,
+            )
         else:
             raise Exception(
                 "Error: LLM Provider not yet supported! please use one of the following: openvino, ollama"

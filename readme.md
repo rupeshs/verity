@@ -12,7 +12,7 @@ It combines SearXNG-powered search, retrieval, and local LLM reasoning to genera
 - Privacy by Design - Search and inference can be fully self-hosted
 - SearXNG-Powered Search - Self-hosted, privacy-friendly meta search engine
 - Designed for fact-grounded, concise answers
-- OpenVINO and Ollama models supported
+- OpenVINO,Ollama models,llama.cpp server or any OpenAI compatible LLM servers supported
 - Modular architecture
 - CLI and WebUI support
 - API server support
@@ -21,6 +21,7 @@ It combines SearXNG-powered search, retrieval, and local LLM reasoning to genera
 Supported LLM runtimes:
 - **OpenVINO** - CPU / iGPU / NPU
 - **Ollama** - CPU / CUDA / Apple Metal
+- **llama.cpp server or any OpenAI compatible LLM server**
 
 ## Dependencies 
 - Python 3.10 or higher
@@ -75,8 +76,20 @@ We have tested the following models.
 | OpenVINO              | [rupeshs/jan-nano-int4-ov](https://huggingface.co/rupeshs/jan-nano-int4-ov)         |  CPU/GPU    |
 | OpenVINO              | [rupeshs/jan-nano-int4-npu-ov](https://huggingface.co/rupeshs/jan-nano-int4-npu-ov)    |  NPU (Intel)|
 | Ollama                | mannix/jan-nano:latest            |  CPU/CUDA   |
+| llama.cpp server               | [Jan-nano-Q4_K_M.gguf](https://huggingface.co/unsloth/Jan-nano-GGUF/tree/main)           |  CPU/CUDA/Metal   |
 
 Tested using Intel AI PC with Intel Core Ultra Series 1 processor with CPU/GPU/NPU.
+
+### How to use LLama.cpp server with Verity
+
+Run the llama.cpp server:
+
+`llama-server.exe -m Jan-nano-Q4_K_M.gguf -c 4096 --port 9000`
+
+If you are changing port configure in the .env file
+
+`OPENAI_LLM_BASE_URL=http://localhost:8000`
+
 
 ### How to use Ollama models with Verity
 
