@@ -13,6 +13,7 @@ def get_prompt(context: str, question: str) -> str:
                 - Do NOT use internal knowledge.
                 - Even if one word answer, explain the answer in detail.
                 - Do NOT guess or infer.
+                - Context is composed of multiple source snippets, and each snippet starts with a citation ID written in square brackets (e.g., [1], [2]). All text following a citation ID belongs to that source until the next citation ID appears.
                 - If the answer is not explicitly in the context, say "Insufficient information to answer this question,please refer the sources."
                 - Each context snippet has a citation ID in square brackets.
                 - Do NOT invent citation IDs.

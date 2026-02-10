@@ -63,7 +63,7 @@ class RagEngine:
 
     def _get_context(self, docs: list[Document]) -> str:
         context = "\n\n".join(
-            f"SOURCE [{doc.metadata['citation_id']}]:\n"
+            f"[{doc.metadata['citation_id']}]:\n"
             f"Title: {doc.metadata['title']}\n"
             f"{doc.page_content}"
             for doc in docs
