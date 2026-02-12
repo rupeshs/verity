@@ -98,12 +98,12 @@ def answer_streamer(query: str, rag_engine: RagEngine):
 
 @app.get("/ask")
 async def ask(
-    prompt: str = Query(...),
+    question: str = Query(...),
     rag_engine=Depends(get_rag_engine),
     description="SSE Streaming endpoint to get answers from Verity",
 ):
     return StreamingResponse(
-        answer_streamer(prompt, rag_engine),
+        answer_streamer(question, rag_engine),
         media_type="text/event-stream",
     )
 

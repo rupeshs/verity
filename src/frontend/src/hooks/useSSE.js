@@ -17,7 +17,7 @@ export const useSSE = (url) => {
         setStatus('Initializing...');
         setIsStreaming(true);
 
-        const fullUrl = `${url}?prompt=${encodeURIComponent(query)}`;
+        const fullUrl = `${url}?question=${encodeURIComponent(query)}`;
         const evtSource = new EventSource(fullUrl);
         eventSourceRef.current = evtSource;
 

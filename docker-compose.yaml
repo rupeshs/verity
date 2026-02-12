@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./
+    container_name: verity-api-backend
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    env_file:
+      - .env_docker
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build: ./src/frontend
+    container_name: verity-webui
+    ports:
+      - "5000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

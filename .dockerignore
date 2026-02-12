@@ -1,0 +1,12 @@
+.git
+__pycache__
+*.pyc
+.env
+.venv
+node_modules
+models
+checkpoints
+hf-cache
+.cache
+docs
+env

@@ -101,3 +101,39 @@ Use the below config in `.env` file. update LLM provider(LLM_PROVIDER) as ollama
 Run the below command to pull the model.
 
 `ollama pull mannix/jan-nano:latest`
+
+
+## Docker (Without OpenVINO Support)
+
+To build and start the services:
+Configurations in `.env_docker` file
+
+```bash
+docker compose up --build
+```
+
+To open verity webui `http://localhost:5000/`
+
+
+## API server - Streaming API (SSE)
+
+Verity API server exposes one API endpoint,it streams model responses using Server-Sent Events (SSE).
+`http://localhost:8000/`
+
+### Endpoint
+
+`GET /ask?question=<query>`
+
+### Response Type
+
+`text/event-stream`
+
+### Events
+
+| Event Name | Description |
+|------------|------------|
+| `search` | Search phase started |
+| `read` | Reading and processing search results |
+| `think` | Generating final answer |
+| `token` | Partial answer token |
+| `done` | Stream completed |
