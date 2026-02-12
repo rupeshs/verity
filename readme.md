@@ -113,6 +113,8 @@ docker compose up --build
 ```
 
 To open verity webui `http://localhost:5000/`
+You can use llama.cpp server, ollama or any OpenAI compatible LLM server.
+
 
 
 ## API server - Streaming API (SSE)
