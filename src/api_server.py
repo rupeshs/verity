@@ -72,7 +72,11 @@ app.add_middleware(
 )
 
 
-def answer_streamer(query: str, rag_engine: RagEngine):
+def answer_streamer(
+    query: str,
+    return_src_md: bool,
+    rag_engine: RagEngine,
+):
     yield "event: search\ndata: Searching...\n\n"
     search_engine = SearchEngine(rag_engine.get_llm_service(), SEARXNG_BASE_URL)
     logger.info("Searching...")
@@ -87,7 +91,7 @@ def answer_streamer(query: str, rag_engine: RagEngine):
     docs = webdoc.get_documents()
     rag_engine.load_documents(docs)
     yield "event: think\ndata: Thinking...\n\n"
-    rag_stream = rag_engine.get_answer_stream(query, True)
+    rag_stream = rag_engine.get_answer_stream(query, return_src_md)
 
     for chunk in rag_stream:
         payload = {"type": "token", "text": chunk}
@@ -100,10 +104,11 @@ def answer_streamer(query: str, rag_engine: RagEngine):
 async def ask(
     question: str = Query(...),
     rag_engine=Depends(get_rag_engine),
+    return_src_md: bool = Query(True),
     description="SSE Streaming endpoint to get answers from Verity",
 ):
     return StreamingResponse(
-        answer_streamer(question, rag_engine),
+        answer_streamer(question, return_src_md, rag_engine),
         media_type="text/event-stream",
     )
 
