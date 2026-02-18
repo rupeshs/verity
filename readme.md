@@ -80,7 +80,7 @@ We have tested the following models.
 
 Tested using Intel AI PC with Intel Core Ultra Series 1 processor with CPU/GPU/NPU.
 
-### How to use LLama.cpp server with Verity
+## How to use LLama.cpp server with Verity
 
 Run the llama.cpp server:
 
@@ -94,7 +94,7 @@ If you are changing port configure in the .env file
 
 
 
-### How to use Ollama models with Verity
+## How to use Ollama models with Verity
 
 Use the below config in `.env` file. update LLM provider(LLM_PROVIDER) as ollama and use model(LLM_MODEL_PATH) as  `mannix/jan-nano:latest`.
 
@@ -139,3 +139,14 @@ Verity API server exposes one API endpoint,it streams model responses using Serv
 | `think` | Generating final answer |
 | `token` | Partial answer token |
 | `done` | Stream completed |
+| `error` | Eroor message |
+
+
+## CLI (go)
+
+First run the Verity web server then, Verity CLI tool can be used as :
+`verity.exe "your question"`
+
+### Build verity CLI
+Execute the below command to build verity CLI tool: 
+`go build`

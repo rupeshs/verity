@@ -80,32 +80,36 @@ def answer_streamer(
     return_src_md: bool,
     rag_engine: RagEngine,
 ):
-    yield "event: search\ndata: Searching...\n\n"
-    search_engine = SearchEngine(rag_engine.get_llm_service(), SEARXNG_BASE_URL)
-    logger.info("Searching...")
-    results = search_engine.search(
-        query,
-        NUM_SEARCH_RESULTS,
-        extend_questions=True,
-    )
-    webdoc = WebDocuments(
-        results,
-        query,
-        app.state.url_ranker,
-    )
-    yield "event: read\ndata: Reading...\n\n"
-    webdoc.generate_documents_sync()
-    docs = webdoc.get_top_documents(top_k=TOP_RESULTS)
+    try:
+        yield "event: search\ndata: Searching...\n\n"
+        search_engine = SearchEngine(rag_engine.get_llm_service(), SEARXNG_BASE_URL)
+        logger.info("Searching...")
+        results = search_engine.search(
+            query,
+            NUM_SEARCH_RESULTS,
+            extend_questions=True,
+        )
+        webdoc = WebDocuments(
+            results,
+            query,
+            app.state.url_ranker,
+        )
+        yield "event: read\ndata: Reading...\n\n"
+        webdoc.generate_documents_sync()
+        docs = webdoc.get_top_documents(top_k=TOP_RESULTS)
 
-    rag_engine.load_documents(docs)
-    yield "event: think\ndata: Thinking...\n\n"
-    rag_stream = rag_engine.get_answer_stream(query, return_src_md)
+        rag_engine.load_documents(docs)
+        yield "event: think\ndata: Thinking...\n\n"
+        rag_stream = rag_engine.get_answer_stream(query, return_src_md)
 
-    for chunk in rag_stream:
-        payload = {"type": "token", "text": chunk}
-        yield f"event: token\ndata: {json.dumps(payload)}\n\n"
+        for chunk in rag_stream:
+            payload = {"type": "token", "text": chunk}
+            yield f"event: token\ndata: {json.dumps(payload)}\n\n"
 
-    yield "event: done\ndata: end\n\n"
+        yield "event: done\ndata: end\n\n"
+    except Exception as ex:
+        logger.error(ex)
+        yield f"event: error\ndata: {ex}\n\n"
 
 
 @app.get("/ask")
