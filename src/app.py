@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from backend.documents.web_documents import WebDocuments
+from backend.documents.url_ranker import UrlRanker
 from backend.llm.llm_factory import LLMFactory
 from backend.rag.rag_engine import RagEngine
 from backend.search.search_engine import SearchEngine
@@ -21,6 +22,7 @@ from config import (
     SEARXNG_BASE_URL,
     OPENAI_LLM_API_KEY,
     OPENAI_LLM_BASE_URL,
+    TOP_RESULTS,
 )
 
 load_dotenv()
@@ -47,6 +49,7 @@ async def async_main():
             llm_service,
             SEARXNG_BASE_URL,
         )
+        url_ranker = UrlRanker()
         rag_engine = RagEngine(
             embeddings_model=embeddings,
             llm_service=llm_service,
@@ -62,10 +65,14 @@ async def async_main():
                 NUM_SEARCH_RESULTS,
                 extend_questions=True,
             )
-            webdoc = WebDocuments(results)
+            webdoc = WebDocuments(
+                results,
+                query,
+                url_ranker,
+            )
             logger.info("Reading...")
             await webdoc.generate_documents()
-            docs = webdoc.get_documents()
+            docs = webdoc.get_top_documents(top_k=TOP_RESULTS)
             rag_engine.load_documents(docs)
             rag_stream = rag_engine.get_answer_stream(query)
             for chunk in rag_stream:

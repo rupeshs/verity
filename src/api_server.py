@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from loguru import logger
 
+from backend.documents.url_ranker import UrlRanker
 from backend.documents.web_documents import WebDocuments
 from backend.llm.embeddings import load_embedding
 from backend.llm.llm_factory import LLMFactory
@@ -25,6 +26,7 @@ from config import (
     OPENAI_LLM_API_KEY,
     OPENAI_LLM_BASE_URL,
     SEARXNG_BASE_URL,
+    TOP_RESULTS,
 )
 from utils import show_system_info
 
@@ -48,6 +50,7 @@ async def lifespan(app: FastAPI):
         OPENAI_LLM_API_KEY,
     )
     llm_service = LLMService(llm)
+    app.state.url_ranker = UrlRanker()
     app.state.rag_engine = RagEngine(
         embeddings_model=embeddings,
         llm_service=llm_service,
@@ -85,10 +88,15 @@ def answer_streamer(
         NUM_SEARCH_RESULTS,
         extend_questions=True,
     )
-    webdoc = WebDocuments(results)
+    webdoc = WebDocuments(
+        results,
+        query,
+        app.state.url_ranker,
+    )
     yield "event: read\ndata: Reading...\n\n"
     webdoc.generate_documents_sync()
-    docs = webdoc.get_documents()
+    docs = webdoc.get_top_documents(top_k=TOP_RESULTS)
+
     rag_engine.load_documents(docs)
     yield "event: think\ndata: Thinking...\n\n"
     rag_stream = rag_engine.get_answer_stream(query, return_src_md)
