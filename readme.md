@@ -9,6 +9,7 @@ It combines SearXNG-powered search, retrieval, and local LLM reasoning to genera
 
 ## ✨ Key Features
 - Fully Local, AI PC Ready -  Optimized for Intel AI PCs using OpenVINO (CPU / iGPU / NPU), Ollama (CPU / CUDA / Metal)
+- No need of any paid APIs
 - Privacy by Design - Search and inference can be fully self-hosted
 - SearXNG-Powered Search - Self-hosted, privacy-friendly meta search engine
 - Designed for fact-grounded, concise answers
