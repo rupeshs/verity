@@ -12,7 +12,7 @@ class UrlRanker:
         self,
         chunk_size=500,
         chunk_overlap=80,
-        embedding_model="BAAI/bge-small-en-v1.5",
+        embedding_model="BAAI/bge-small-en",
     ):
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
