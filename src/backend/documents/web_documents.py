@@ -6,6 +6,7 @@ from loguru import logger
 
 from backend.documents.crawl import crawl_websites
 from backend.documents.url_ranker import UrlRanker
+from utils import trim_txt
 
 
 class WebDocuments:
@@ -77,7 +78,7 @@ class WebDocuments:
             top_k=top_k,
         )
         for url, score in top_urls:
-            logger.info(f"URL: {url} -> Score: {score}")
+            logger.info(f"URL: {trim_txt(url)} -> Score: {score:.4f}")
 
         urls = [url for url, _ in top_urls]
         top_docs = []

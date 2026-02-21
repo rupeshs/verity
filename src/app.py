@@ -43,7 +43,7 @@ async def async_main():
             OPENAI_LLM_BASE_URL,
             OPENAI_LLM_API_KEY,
         )
-        embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
+        embeddings = load_embedding("BAAI/bge-small-en-v1.5")
         llm_service = LLMService(llm)
         search_engine = SearchEngine(
             llm_service,

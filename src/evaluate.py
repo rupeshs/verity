@@ -59,9 +59,7 @@ async def evaluate_rag():
     await webdoc.generate_documents()
     docs = webdoc.get_documents()
 
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
+    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
     llm = LLMFactory.create_llm("openvino", "rupeshs/jan-nano-int4-ov", "CPU")
     results = []
     contexts = []

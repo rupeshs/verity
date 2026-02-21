@@ -11,8 +11,11 @@ from backend.rag.chunk_processor import (
     expand_chunks,
     sort_chunks,
 )
+from backend.rag.reranker import get_reranker
 from backend.rag.retriver import VectorStoreRetriever
+from backend.rag.selector import select_by_score_gap, should_abort_due_to_low_score
 from backend.rag.splitter import get_splits
+from utils import trim_txt
 
 
 class RagEngine:
@@ -25,6 +28,7 @@ class RagEngine:
         self.llm_service = llm_service
         self._context = ""
         self.citation_map = {}
+        self.reranker = get_reranker()
 
     def load_documents(self, docs: list[Document]):
         splits = get_splits(docs)
@@ -36,7 +40,7 @@ class RagEngine:
         vec_store.ingest_documents(chunks)
         self.retriever = vec_store.get_retriever(
             search_type="mmr",
-            k=4,
+            k=8,
             fetch_k=20,
             lambda_mult=0.6,
         )
@@ -70,10 +74,16 @@ class RagEngine:
         )
         return context
 
-    def _trim_title(self, title, max_len=60):
-        if len(title) <= max_len:
-            return title
-        return title[:max_len].rsplit(" ", 1)[0] + "..."
+    def rerank_chunks(
+        self,
+        top_chunks: list[Document],
+        top_k=4,
+    ) -> list[Document]:
+        pairs = [(self.question, doc.page_content) for doc in top_chunks]
+        scores = self.reranker.predict(pairs)
+        reranked = sorted(zip(top_chunks, scores), key=lambda x: x[1], reverse=True)
+        top_reranked = select_by_score_gap(reranked)
+        return top_reranked
 
     def get_answer_stream(
         self,
@@ -81,32 +91,44 @@ class RagEngine:
         use_citations_markdown=False,
         return_sources=True,
     ) -> any:
+        self.question = question
         logger.info(f"Retrieving relevant chunks...")
         top_chunks = self.retriever.invoke(question)
         logger.info(f"Retrieved top {len(top_chunks)} chunks")
-        expanded_chunks = expand_chunks(top_chunks, self.chunk_map, 1)
-        self._generate_citation_map(expanded_chunks)
-        self._context = self._get_context(expanded_chunks)
-        logger.info(f"Chunk expansion completed | count: {len(expanded_chunks)}")
+        # expanded_chunks = expand_chunks(top_chunks, self.chunk_map, 1)
+        logger.info(f"Reranking chunks...")
+        top_reranked = self.rerank_chunks(top_chunks)
 
-        # self._dump_context()
-        logger.info("🧠 Preparing answer...")
-        stream = self.llm_service.get_answer_stream(self._context, question)
+        for doc, score in top_reranked:
+            logger.info(f"{trim_txt(doc.metadata['url'])} -> {score:.4f}")
+        if should_abort_due_to_low_score(top_reranked):
+            message = "I couldn’t find reliable information in the available sources to answer this question."
+            logger.warning(message)
+            yield message
+        else:
+            reranked_chunks = [doc for doc, score in top_reranked]
+            self._generate_citation_map(reranked_chunks)
+            self._context = self._get_context(reranked_chunks)
+            logger.info(f"Reranking completed | count: {len(reranked_chunks)}")
 
-        for chunk in stream:
-            yield chunk["message"]["content"]
+            # self._dump_context()
+            logger.info("🧠 Preparing answer...")
+            stream = self.llm_service.get_answer_stream(self._context, question)
 
-        if return_sources:
-            if use_citations_markdown:
-                line = "\n\n#### Sources \n"
-                yield line
-                for _, data in self.citation_map.items():
-                    line = f"- [{data['citation_id']}] - [{self._trim_title(data['title'])}]({data['url']}) \n"
+            for chunk in stream:
+                yield chunk["message"]["content"]
+
+            if return_sources:
+                if use_citations_markdown:
+                    line = "\n\n#### Sources \n"
                     yield line
-            else:
-                yield "\n\nSources : \n"
-                for _, data in self.citation_map.items():
-                    yield f"[{data['citation_id']}] - {data['url']})\n"
+                    for _, data in self.citation_map.items():
+                        line = f"- [{data['citation_id']}] - [{trim_txt(data['title'])}]({data['url']}) \n"
+                        yield line
+                else:
+                    yield "\n\nSources : \n"
+                    for _, data in self.citation_map.items():
+                        yield f"[{data['citation_id']}] - {data['url']})\n"
 
     def get_context(self) -> str:
         return self._context

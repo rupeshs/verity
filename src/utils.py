@@ -17,3 +17,12 @@ def show_system_info(
             logger.info(f"Processor: {platform.processor()}")
     except Exception as ex:
         logger.error(f"Error occurred while getting system information {ex}")
+
+
+def trim_txt(
+    txt: str,
+    max_len: int = 60,
+) -> str:
+    if len(txt) <= max_len:
+        return txt
+    return txt[:max_len].rsplit(" ", 1)[0] + "..."
