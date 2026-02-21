@@ -12,6 +12,7 @@ from backend.documents.url_ranker import UrlRanker
 from backend.llm.llm_factory import LLMFactory
 from backend.llm.llm_service import LLMService
 from backend.rag.rag_engine import RagEngine
+from constants import EMBEDDING_MODEL
 
 SAMPLES_COUNT = 10
 
@@ -59,7 +60,7 @@ async def evaluate_rag():
     await webdoc.generate_documents()
     docs = webdoc.get_documents()
 
-    embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     llm = LLMFactory.create_llm("openvino", "rupeshs/jan-nano-int4-ov", "CPU")
     results = []
     contexts = []

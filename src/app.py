@@ -4,26 +4,24 @@ import sys
 from dotenv import load_dotenv
 from loguru import logger
 
-from backend.documents.web_documents import WebDocuments
 from backend.documents.url_ranker import UrlRanker
+from backend.documents.web_documents import WebDocuments
+from backend.llm.embeddings import load_embedding
 from backend.llm.llm_factory import LLMFactory
+from backend.llm.llm_service import LLMService
 from backend.rag.rag_engine import RagEngine
 from backend.search.search_engine import SearchEngine
-from backend.llm.llm_service import LLMService
-from utils import show_system_info
-
-
-from backend.llm.embeddings import load_embedding
 from config import (
     DEVICE,
     LLM_MODEL_PATH,
     LLM_PROVIDER,
     NUM_SEARCH_RESULTS,
-    SEARXNG_BASE_URL,
     OPENAI_LLM_API_KEY,
     OPENAI_LLM_BASE_URL,
+    SEARXNG_BASE_URL,
     TOP_RESULTS,
 )
+from utils import show_system_info
 
 load_dotenv()
 logger.remove()
@@ -31,6 +29,7 @@ logger.add(
     sys.stderr,
     format="<green>{time:YYYY-MM-DD HH:mm:ss.SSS A}</green> [{level}] {message}",
 )
+from constants import EMBEDDING_MODEL
 
 
 async def async_main():
@@ -43,7 +42,7 @@ async def async_main():
             OPENAI_LLM_BASE_URL,
             OPENAI_LLM_API_KEY,
         )
-        embeddings = load_embedding("BAAI/bge-small-en-v1.5")
+        embeddings = load_embedding(EMBEDDING_MODEL)
         llm_service = LLMService(llm)
         search_engine = SearchEngine(
             llm_service,

@@ -28,6 +28,7 @@ from config import (
     SEARXNG_BASE_URL,
     TOP_RESULTS,
 )
+from constants import EMBEDDING_MODEL
 from utils import show_system_info
 
 load_dotenv()
@@ -41,7 +42,7 @@ logger.add(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Loading models...")
-    embeddings = load_embedding("sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = load_embedding(EMBEDDING_MODEL)
     llm = LLMFactory.create_llm(
         LLM_PROVIDER,
         LLM_MODEL_PATH,
