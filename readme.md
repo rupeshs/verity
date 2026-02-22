@@ -144,10 +144,13 @@ Verity API server exposes one API endpoint,it streams model responses using Serv
 
 
 ## CLI (go)
+![Verity CLI screenshot](https://raw.githubusercontent.com/rupeshs/verity/refs/heads/main/docs/images/verity_cli.png)
 
 First run the Verity web server then, Verity CLI tool can be used as :
 `verity.exe "your question"`
 
 ### Build verity CLI
+
 Execute the below command to build verity CLI tool: 
+
 `go build`
