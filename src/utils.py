@@ -26,3 +26,8 @@ def trim_txt(
     if len(txt) <= max_len:
         return txt
     return txt[:max_len].rsplit(" ", 1)[0] + "..."
+
+
+def dump_search_scores(results: list):
+    for result in results:
+        logger.info(f"URL: {trim_txt(result['url'])} -> {result['score']:.4f}")

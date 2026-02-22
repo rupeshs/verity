@@ -3,7 +3,7 @@ import re
 from loguru import logger
 
 from backend.llm.llm_service import LLMService
-from backend.search.searxng import get_search_results, search_query
+from backend.search.searxng import search_query
 
 
 class SearchEngine:
@@ -25,15 +25,37 @@ class SearchEngine:
             questions = self.llm_service.generate_questions(question)
             questions.extend([question])
             logger.info(f"Questions: {questions}")
-
-            return get_search_results(
-                questions,
-                num_results,
-                self.searxng_base_url,
-            )
+            return self._get_top_results(questions, num_results)
         else:
-            return search_query(
+            return self._get_top_results([question], num_results)
+
+    def _get_top_results(
+        self,
+        questions: list[str],
+        num_results: int = 3,
+    ):
+        top_results = []
+        for question in questions:
+            results = search_query(
                 question,
-                num_results=num_results,
+                num_results=10,
                 searxng_base_url=self.searxng_base_url,
             )
+            top_results.extend(results[:num_results])
+
+        rank_top = sorted(top_results, key=lambda result: result["score"], reverse=True)
+        dedup_results = self._remove_duplicates(rank_top)
+        return dedup_results[:num_results]
+
+    def _remove_duplicates(self, results: list) -> list:
+        unique = {}
+
+        for result in results:
+            url = result["url"]
+            score = result["score"]
+
+            if url not in unique or score > unique[url]["score"]:
+                unique[url] = result
+
+        deduplicated_results = list(unique.values())
+        return deduplicated_results

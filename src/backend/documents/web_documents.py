@@ -5,7 +5,7 @@ from langchain_core.documents import Document
 from loguru import logger
 
 from backend.documents.crawl import crawl_websites
-from backend.documents.url_ranker import UrlRanker
+
 from utils import trim_txt
 
 
@@ -14,11 +14,9 @@ class WebDocuments:
         self,
         search_results: list[dict],
         query: str,
-        url_ranker: UrlRanker,
     ):
         self.search_results = search_results
         self.urls = [result["url"] for result in search_results]
-        self.url_ranker = url_ranker
         self.query = query
         self.docs = []
 
@@ -67,22 +65,3 @@ class WebDocuments:
         except RuntimeError as e:
             loop = asyncio.get_event_loop()
             return loop.run_until_complete(self.generate_documents())
-
-    def get_top_documents(
-        self,
-        top_k: int = 3,
-    ) -> list[Document]:
-        top_urls = self.url_ranker.rank(
-            self.query,
-            self.docs,
-            top_k=top_k,
-        )
-        for url, score in top_urls:
-            logger.info(f"URL: {trim_txt(url)} -> Score: {score:.4f}")
-
-        urls = [url for url, _ in top_urls]
-        top_docs = []
-        for document in self.docs:
-            if document.metadata.get("url") in urls:
-                top_docs.append(document)
-        return top_docs

@@ -1,9 +1,10 @@
 import requests
 
 
+# https://docs.searxng.org/dev/search_api.html
 def search_query(
     query: str,
-    num_results: int = 3,
+    num_results: int = 10,
     searxng_base_url: str = "http://localhost:8080",
 ):
     headers = {
@@ -15,14 +16,14 @@ def search_query(
         "Accept": "application/json",
         "Referer": "http://localhost:8080/",
     }
-    query = f"{query} -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt -filetype:pptx"
+    query = f"{query} -filetype:pdf -filetype:doc -filetype:docx -filetype:ppt -filetype:pptx -site:spotify.com"
     params = {
         "q": query,
         "format": "json",
         "language": "en",
         "categories": ["general"],
         "safesearch": 0,
-        "engines": ["google"],
+        # "engines": ["google"],
     }
     try:
         searxng_url = f"{searxng_base_url}/search"
@@ -39,23 +40,3 @@ def search_query(
         raise Exception(f"Unexpected error in search: {e}")
 
     return results[:num_results]
-
-
-def get_search_results(
-    questions: list[str],
-    num_results: int = 3,
-    searxng_base_url: str = "http://localhost:8080",
-):
-    results = []
-    for question in questions:
-        res = search_query(
-            question, num_results=num_results, searxng_base_url=searxng_base_url
-        )
-        results.extend(res)
-        dedup_results = {}
-    for result in results:
-        url = result["url"]
-        if url not in dedup_results:
-            dedup_results[url] = result
-    results = list(dedup_results.values())
-    return results

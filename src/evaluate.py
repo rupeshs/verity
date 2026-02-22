@@ -8,7 +8,7 @@ from ragas.llms import llm_factory
 from openai import AsyncOpenAI
 
 from backend.documents.web_documents import WebDocuments
-from backend.documents.url_ranker import UrlRanker
+
 from backend.llm.llm_factory import LLMFactory
 from backend.llm.llm_service import LLMService
 from backend.rag.rag_engine import RagEngine
@@ -55,8 +55,7 @@ async def evaluate_rag():
 
     for result in results:
         print(result["url"])
-    url_ranker = UrlRanker()
-    webdoc = WebDocuments(results, "", url_ranker)
+    webdoc = WebDocuments(results, "")
     await webdoc.generate_documents()
     docs = webdoc.get_documents()
 
