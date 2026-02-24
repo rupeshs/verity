@@ -146,11 +146,11 @@ Verity API server exposes one API endpoint,it streams model responses using Serv
 ## CLI (go)
 ![Verity CLI screenshot](https://raw.githubusercontent.com/rupeshs/verity/refs/heads/main/docs/images/verity_cli.png)
 
-First run the Verity web server then, Verity CLI tool can be used as :
+Follow the steps to run Verity CLI
+- Step 1: Install SearXNG by following [this guide](https://nolowiz.com/how-to-use-searxng-as-a-private-search-api-step-by-step-guide/)
+- Step 2: Build and run verity CLI tool,in the terminal enter into `verity/src/cli` folder and run the below command :
+
+    `go build`
+- Step 3:Install and run the Verity Web server by double clicking `install.bat` & followed by `start-webserver.bat`.
+- Step 4: Verity CLI tool can be used as :
 `verity.exe "your question"`
-
-### Build verity CLI
-
-Execute the below command to build verity CLI tool: 
-
-`go build`
