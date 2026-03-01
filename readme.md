@@ -154,3 +154,25 @@ Follow the steps to run Verity CLI
 - Step 3:Install and run the Verity Web server by double clicking `install.bat` & followed by `start-webserver.bat`.
 - Step 4: Verity CLI tool can be used as :
 `verity.exe "your question"`
+
+## Verity MCP server
+
+To use MCP server 
+- Install and run 'start-mcpserver.bat'
+
+Add following configuration to use it 
+
+```
+{
+  "mcpServers": {
+    "verity": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://127.0.0.1:8000/mcp"
+      ],
+      "timeout": 120000
+    }
+  }
+}
+```
