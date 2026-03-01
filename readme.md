@@ -157,10 +157,12 @@ Follow the steps to run Verity CLI
 
 ## Verity MCP server
 
-To use MCP server 
-- Install and run 'start-mcpserver.bat'
+![Verity MCP server running with LM Studio](https://raw.githubusercontent.com/rupeshs/verity/refs/heads/main/docs/images/mcp_verity.png)
 
-Add following configuration to use it 
+To use MCP server 
+- Install and run `start-mcpserver.bat`
+
+Add the following configuration :
 
 ```
 {

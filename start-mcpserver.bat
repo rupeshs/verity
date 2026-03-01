@@ -1,6 +1,6 @@
 @echo off
 setlocal
-echo Starting Verity Webserver...
+echo Starting Verity MCP server...
 
 set "PYTHON_COMMAND=python"
 
